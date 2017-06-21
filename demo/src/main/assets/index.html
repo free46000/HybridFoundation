@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/DeviceBridge.js"></script>
+</head>
+<body>
+<div>
+    <button style="height:100px; width:100%; font-size:30px" id="callAndroidMethod">调用Android方法
+    </button>
+</div>
+</body>
+
+<script>
+
+    $("#callAndroidMethod").click(callAndroidMethod);
+    function callAndroidMethod() {
+        var message = {handlerName: 'testAndroid'}
+        var result = window.DeviceJsBridge.sendMessage(message, function (message) {
+            alert("js调用android异步方法Response结果：" + JSON.stringify(message))
+        })
+        //alert("js调用android方法同步返回结果：" + message[HANDLER_PROPERTY_NAME] + '==' + message[CALLBACK_PROPERTY_NAME] + '==' + result)
+    }
+
+    window.DeviceJsBridge.registMessageHandler("testCallJs", function (message, responseCallback) {
+        alert("android调用js方法，消息内容：" + JSON.stringify(message))
+        message.data = '我是在js中赋值的数据'
+        responseCallback(message);
+    });
+</script>
+</html>

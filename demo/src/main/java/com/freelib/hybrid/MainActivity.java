@@ -1,6 +1,7 @@
 package com.freelib.hybrid;
 
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -20,6 +21,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
+    public static final long DELAY_TIME = 2000;
+
     @ViewById(R.id.webView)
     protected HybridWebView webView;
 
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public void initView() {
         splashHelper = new SplashHelper(this);
         splashHelper.setDelayObservable(createH5ResourceObservable());
-        splashHelper.setDelayTime(5000);
+        splashHelper.setDelayTime(DELAY_TIME);
         splashHelper.showSplash(R.id.container, SplashFragment_.builder().build());
 
         JsApi jsApi = new JsApi(webView.getJsBridge());
@@ -62,11 +65,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(String url) {
-                Message message = new Message();
-                message.setHandlerName("testCallJs");
-                message.setData("android调用js数据");
-                webView.getJsBridge().sendMessage(message, responseMessage -> System.out.println("js异步response消息:" + responseMessage));
+                new Handler().postDelayed(() -> {
+                    Message message = new Message();
+                    message.setHandlerName("testCallJs");
+                    message.setData("数据内容（onPageFinished执行android调用js，js返回的数据会打印在logcat）");
+                    webView.getJsBridge().sendMessage(message, responseMessage -> System.out.println("js异步response消息:" + responseMessage));
+                }, DELAY_TIME);
                 System.out.println("page finished:" + url);
+
             }
 
             @Override
@@ -88,20 +94,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Observable createH5ResourceObservable() {
-        Observable<String> observable = Observable.just("").map(s -> {
+        return Observable.just(getH5SavePath() + "/disk/index.html").map(url -> {
+//        return Observable.just("file:///android_asset/index.html").map(url -> {
             unZip();
-            return "";
+            return url;
         }).observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(s -> webView.loadUrl("file:///android_asset/test.html"));
-
-        return observable;
+                .doOnNext(url -> webView.loadUrl("file://" + url));
     }
 
     private void unZip() {
-        boolean isSuccess = ZipUtils.unZipFile(this, getH5SavePath() + "/disk_temp/", "dist.zip");
+        boolean isSuccess = ZipUtils.unZipFile(this, getH5SavePath() + "/disk_temp/", "disk.zip");
         Log.e("MainActivity", "temp unZipFile:" + isSuccess);
-        isSuccess = FileUtils.copyFile(getH5SavePath() + "/disk_temp/index.html", getH5SavePath() + "/disk/index.html");
-        Log.e("MainActivity", "copyFile:" + isSuccess);
         isSuccess = FileUtils.deleteDir(getH5SavePath() + "/disk/");
         Log.e("MainActivity", "deleteDir:" + isSuccess);
         isSuccess = FileUtils.copyDir(getH5SavePath() + "/disk_temp/", getH5SavePath() + "/disk/");
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 获取内置SD卡路径
+     * 获取H5保存路径
      *
      * @return
      */
