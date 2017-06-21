@@ -3,7 +3,7 @@
 
 ## 用法
 
-### `JS`通信
+#### `JS`通信
 - 需要把`library`中`assets`文件夹下的`DeviceBridge.js`放入并加载到你的前端项目中
 - `Android`调用`JS`
 首先在`JS`中注册对应`Handler`，以注册的字符串为`key`对应
@@ -36,10 +36,10 @@ var result = window.DeviceJsBridge.sendMessage(message, function (message) {
 })
 ```
 
-### 文件处理工具
+#### 文件处理工具
 相关用法详见代码注释，包含对压缩文件的处理
 
-### 闪屏辅助类
+#### 闪屏辅助类
 下面列一下常用的方法
 ``` java
 /**
@@ -66,7 +66,7 @@ public void setSplashHideListener(SplashHideListener splashHideListener)
 public void showSplash(int viewId, Fragment splashFragment)
 ```
 
-### `HybridWebView`的封装
+#### `HybridWebView`的封装
 主要封装了通用的方法，对外提供了必要的监听回调，还包括了`JSBridge`的使用，让你在使用`WebView`的时候更方便，具体使用详见`Demo`
 
 
@@ -85,13 +85,13 @@ public void showSplash(int viewId, Fragment splashFragment)
 
 按照图上的时序，接下来说一下每一步中的实践，以及碰到的坑。下面讲解
 
-### 初次安装
+#### 初次安装
 - **打包**
 在打包程序时这一步主要是把`Html`相关资源文件压缩后放在`assets`文件夹下即可
 - **安装**
 用户安装完应用程序打开后，检测是否为初次使用，如果是则通过程序直接解压包内资源到手机存储上即可，不局限于SD卡。
 
-### 展示页面
+#### 展示页面
 - **闪屏页展示**
 由于上面的解压资源，还有`Webview`初始化、`JS`的加载执行、`html`的渲染都是耗时操作，并且都是发生在`Html`展示之前，所以我们选择把闪屏页用`Android`原生代码来编写，采用覆盖`WebView`所在`Activity`的方案，这样在闪屏页隐藏的时候，用户就可以看到业务界面，可以提升用户体验。
 注：另外提供两种闪屏优化的小技巧，使用透明主题或者设置主题背景图片
@@ -114,14 +114,14 @@ public void showSplash(int viewId, Fragment splashFragment)
 二：自定义协议然后由`Native`层拦截并解析请求，使用起来复杂，容易和业务耦合，也不是最优选，弃用
 三：拦截`JS#prompt()`方法并解析，使用起来复杂，但是比第一种更安全，比第二种灵活一些，所以使用此方案
 
-### 资源文件获取
+#### 资源文件获取
 资源文件采取差异化更新方案，本地存储一个标识，可以为版本号或者更新时间，这个可以和后端同学一起商量确定，资源文件下载还有推送之类的由于`Html`的局限性，所以还是直接由`Native`层做比较合适，下面简单讲解下应用中的两种更新方式：
 - **服务端推送下发**
 可以通过集成第三方的推送服务，在客户端收到更新推送后主动去请求下载差异化文件
 - **主动请求**
 可以在选择合适的时机，如在应用启动时去请求差异化文件
 
-### 资源文件更新
+#### 资源文件更新
 根据差异化清单对资源文件进行整合，存放在临时目录中，然后在第二次打开应用时更换，并展示更新后的界面，达到热更新的效果。
 
 ## 总结
