@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author weizx  2017/06/02
+ * @author free46000  2017/06/02
  * @version v1.0
  */
 public class JsBridge {

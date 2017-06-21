@@ -1,7 +1,7 @@
 package com.freelib.hybrid.bridge;
 
 /**
- * @author weizx  2017/06/06
+ * @author free46000  2017/06/06
  * @version v1.0
  */
 public interface MessageHandler {

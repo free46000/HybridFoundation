@@ -4,7 +4,7 @@ import com.freelib.hybrid.bridge.JsBridge;
 import com.freelib.hybrid.bridge.MessageHandler;
 
 /**
- * @author weizx  2017/06/08
+ * @author free46000  2017/06/08
  * @version v1.0
  */
 public class JsApi {

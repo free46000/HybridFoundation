@@ -23,7 +23,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * 压缩相关工具类
  *
- * @author weizx  2017/05/18
+ * @author free46000  2017/05/18
  * @version v1.0
  */
 public class ZipUtils {

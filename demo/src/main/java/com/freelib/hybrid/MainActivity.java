@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
                     Message message = new Message();
                     message.setHandlerName("testCallJs");
                     message.setData("数据内容（onPageFinished执行android调用js，js返回的数据会打印在logcat）");
-                    webView.getJsBridge().sendMessage(message, responseMessage -> System.out.println("js异步response消息:" + responseMessage));
+                    webView.getJsBridge().sendMessage(message, responseMessage ->
+                            System.out.println("js异步response消息:" + responseMessage));
                 }, DELAY_TIME);
                 System.out.println("page finished:" + url);
 

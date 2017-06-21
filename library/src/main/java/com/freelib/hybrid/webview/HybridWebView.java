@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author weizx  2017/05/12
+ * @author free46000  2017/05/12
  * @version v1.0
  */
 public class HybridWebView extends WebView {

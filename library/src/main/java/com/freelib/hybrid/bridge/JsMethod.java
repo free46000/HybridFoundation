@@ -7,7 +7,7 @@ import android.webkit.WebView;
 import com.google.gson.Gson;
 
 /**
- * @author weizx  2017/06/02
+ * @author free46000  2017/06/02
  * @version v1.0
  */
 public class JsMethod {
