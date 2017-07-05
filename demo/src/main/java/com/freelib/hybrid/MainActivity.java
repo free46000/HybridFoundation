@@ -16,8 +16,12 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.LinkedList;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +32,14 @@ public class MainActivity extends AppCompatActivity {
 
     private SplashHelper splashHelper;
 
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+        super.onBackPressed();
+    }
 
     @AfterViews
     public void initView() {
@@ -66,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(String url) {
                 new Handler().postDelayed(() -> {
-                    Message message = new Message();
+                    Message message = Message.getMessage();
                     message.setHandlerName("testCallJs");
                     message.setData("数据内容（onPageFinished执行android调用js，js返回的数据会打印在logcat）");
                     webView.getJsBridge().sendMessage(message, responseMessage ->
@@ -95,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Observable createH5ResourceObservable() {
-        return Observable.just(getH5SavePath() + "/disk/index.html").map(url -> {
-//        return Observable.just("file:///android_asset/index.html").map(url -> {
+//        return Observable.just(getH5SavePath() + "/disk/index.html").map(url -> {
+        return Observable.just("/android_asset/index.html").map(url -> {
             unZip();
             return url;
         }).observeOn(AndroidSchedulers.mainThread())
@@ -104,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void unZip() {
-        boolean isSuccess = ZipUtils.unZipFile(this, getH5SavePath() + "/disk_temp/", "disk.zip");
+        boolean isSuccess = ZipUtils.unZipFile(this, getH5SavePath() + "/disk_temp/", "dist.zip");
         Log.e("MainActivity", "temp unZipFile:" + isSuccess);
         isSuccess = FileUtils.deleteDir(getH5SavePath() + "/disk/");
         Log.e("MainActivity", "deleteDir:" + isSuccess);
@@ -115,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
     /**
      * 获取H5保存路径

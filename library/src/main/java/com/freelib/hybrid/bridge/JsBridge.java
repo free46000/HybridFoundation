@@ -46,6 +46,8 @@ public class JsBridge {
         }
 
         JsMethod.execJs(webView, message);
+
+        message.recycle();
     }
 
     /**
